@@ -25,10 +25,11 @@ git clone https://github.com/gregpr07/dotfiles.git ~/Developer/dotfiles
 ```
 
 The installer is idempotent — safe to re-run. It:
-1. Installs `zsh`, `git`, `git-delta` via apt or brew
+1. Installs `zsh`, `git`, `git-delta`, `tmux` via apt or brew
 2. Installs oh-my-zsh, powerlevel10k, zsh-autosuggestions, zsh-syntax-highlighting
-3. Symlinks the dotfiles into `~` (existing files are backed up to `*.bak.<timestamp>`)
-4. On Linux, appends a one-liner to `~/.bashrc` so interactive SSH sessions auto-launch zsh **without** running `chsh` — the login shell stays `bash` so non-interactive tooling keeps working unchanged
+3. Installs tmux plugins: catppuccin theme, tmux-cpu, tmux-battery (into `~/.config/tmux/plugins/`)
+4. Symlinks the dotfiles into `~` (existing files are backed up to `*.bak.<timestamp>`)
+5. On Linux, appends a one-liner to `~/.bashrc` so interactive SSH sessions auto-launch zsh **without** running `chsh` — the login shell stays `bash` so non-interactive tooling keeps working unchanged
 
 Open a new shell when it's done.
 

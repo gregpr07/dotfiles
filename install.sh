@@ -33,11 +33,11 @@ link() {
 say "Installing zsh, git, git-delta…"
 if [ "$OS" = "Linux" ] && command -v apt-get >/dev/null; then
   sudo apt-get update -qq
-  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq zsh git curl git-delta
+  sudo DEBIAN_FRONTEND=noninteractive apt-get install -y -qq zsh git curl git-delta tmux
 elif [ "$OS" = "Darwin" ] && command -v brew >/dev/null; then
-  brew install zsh git git-delta >/dev/null
+  brew install zsh git git-delta tmux >/dev/null
 else
-  warn "Unsupported OS or missing apt/brew — install zsh, git, git-delta manually."
+  warn "Unsupported OS or missing apt/brew — install zsh, git, git-delta, tmux manually."
 fi
 
 # ─── 2. oh-my-zsh + p10k + plugins ───────────────────────────────────────
@@ -56,7 +56,20 @@ ZSH_CUSTOM="$HOME/.oh-my-zsh/custom"
   git clone --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" >/dev/null 2>&1 && \
   ok "zsh-syntax-highlighting installed"
 
-# ─── 3. Symlink dotfiles ─────────────────────────────────────────────────
+# ─── 3. tmux plugins (catppuccin theme + cpu + battery) ──────────────────
+TMUX_PLUGINS="$HOME/.config/tmux/plugins"
+mkdir -p "$TMUX_PLUGINS/catppuccin" "$TMUX_PLUGINS/tmux-plugins"
+[ ! -d "$TMUX_PLUGINS/catppuccin/tmux" ] && \
+  git clone --depth=1 https://github.com/catppuccin/tmux.git "$TMUX_PLUGINS/catppuccin/tmux" >/dev/null 2>&1 && \
+  ok "catppuccin tmux installed"
+[ ! -d "$TMUX_PLUGINS/tmux-plugins/tmux-cpu" ] && \
+  git clone --depth=1 https://github.com/tmux-plugins/tmux-cpu.git "$TMUX_PLUGINS/tmux-plugins/tmux-cpu" >/dev/null 2>&1 && \
+  ok "tmux-cpu installed"
+[ ! -d "$TMUX_PLUGINS/tmux-plugins/tmux-battery" ] && \
+  git clone --depth=1 https://github.com/tmux-plugins/tmux-battery.git "$TMUX_PLUGINS/tmux-plugins/tmux-battery" >/dev/null 2>&1 && \
+  ok "tmux-battery installed"
+
+# ─── 4. Symlink dotfiles ─────────────────────────────────────────────────
 say "Symlinking configs…"
 link zshrc            .zshrc
 link tmux.conf        .tmux.conf
@@ -67,7 +80,7 @@ link vimrc            .vimrc
 link config/ghostty/config .config/ghostty/config
 link config/git/ignore     .config/git/ignore
 
-# ─── 4. On Linux, auto-launch zsh from interactive .bashrc ───────────────
+# ─── 5. On Linux, auto-launch zsh from interactive .bashrc ───────────────
 # (no chsh — login shell stays bash, so non-interactive ssh & system tooling
 #  keep working unchanged)
 if [ "$OS" = "Linux" ] && [ -f "$HOME/.bashrc" ]; then
