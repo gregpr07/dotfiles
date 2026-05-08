@@ -19,3 +19,14 @@ source $ZSH/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 alias yolo="claude --dangerously-skip-permissions"
 alias c="yolo"
+alias x="codex --yolo"
+
+# yazi - cd to directory on exit
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	if cwd="$(command cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
+		builtin cd -- "$cwd"
+	fi
+	rm -f -- "$tmp"
+}
