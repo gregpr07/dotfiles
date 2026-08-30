@@ -29,6 +29,22 @@ link() {
   ok "$dst -> $src"
 }
 
+install_ai_instructions() {
+  link ai/me.md     .codex/AGENTS.md
+  link ai/me.md     .claude/me.md
+  link ai/CLAUDE.md .claude/CLAUDE.md
+}
+
+if [ "$#" -eq 1 ] && [ "$1" = "--instructions-only" ]; then
+  say "Symlinking global Codex and Claude Code instructions…"
+  install_ai_instructions
+  ok "AI instructions installed. Start fresh Codex and Claude Code sessions."
+  exit 0
+elif [ "$#" -ne 0 ]; then
+  warn "Usage: $0 [--instructions-only]"
+  exit 2
+fi
+
 # ─── 1. Install dependencies ─────────────────────────────────────────────
 say "Installing zsh, git, git-delta…"
 if [ "$OS" = "Linux" ] && command -v apt-get >/dev/null; then
@@ -79,6 +95,7 @@ link gitignore_global .gitignore_global
 link vimrc            .vimrc
 link config/ghostty/config .config/ghostty/config
 link config/git/ignore     .config/git/ignore
+install_ai_instructions
 
 # ─── 5. On Linux, auto-launch zsh from interactive .bashrc ───────────────
 # (no chsh — login shell stays bash, so non-interactive ssh & system tooling

@@ -15,6 +15,8 @@ Works on **macOS** (homebrew) and **Linux** (apt — Ubuntu/Debian).
 | `gitignore_global` | repo-wide ignores (`.worktrees`) |
 | `config/ghostty/config` | Ghostty terminal settings |
 | `config/git/ignore` | another global git ignore (Claude's local settings) |
+| `ai/me.md` | Personal operating instructions loaded globally by Codex and Claude Code |
+| `ai/CLAUDE.md` | Claude Code import shim for `me.md` and the local browser-harness skill |
 | `vimrc` | `syntax on`. that's it. |
 
 ## Install (humans)
@@ -28,10 +30,20 @@ The installer is idempotent — safe to re-run. It:
 1. Installs `zsh`, `git`, `git-delta`, `tmux` via apt or brew
 2. Installs oh-my-zsh, powerlevel10k, zsh-autosuggestions, zsh-syntax-highlighting
 3. Installs tmux plugins: catppuccin theme, tmux-cpu, tmux-battery (into `~/.config/tmux/plugins/`)
-4. Symlinks the dotfiles into `~` (existing files are backed up to `*.bak.<timestamp>`)
+4. Symlinks the dotfiles into `~`, including global Codex and Claude Code instructions (existing files are backed up to `*.bak.<timestamp>`)
 5. On Linux, appends a one-liner to `~/.bashrc` so interactive SSH sessions auto-launch zsh **without** running `chsh` — the login shell stays `bash` so non-interactive tooling keeps working unchanged
 
+Claude Code also imports `~/Developer/browser-harness/SKILL.md`. That optional local import may be unavailable on remote machines until browser-harness is installed there; `me.md` still loads through `~/.claude/me.md`.
+
 Open a new shell when it's done.
+
+To install only the global Codex and Claude Code instructions:
+
+```sh
+~/Developer/dotfiles/install.sh --instructions-only
+```
+
+Start fresh agent sessions afterward; instruction files are loaded when each session starts.
 
 ## Install (agents)
 
@@ -73,6 +85,10 @@ ln -sf ~/Developer/dotfiles/vimrc            ~/.vimrc
 mkdir -p ~/.config/ghostty ~/.config/git
 ln -sf ~/Developer/dotfiles/config/ghostty/config ~/.config/ghostty/config
 ln -sf ~/Developer/dotfiles/config/git/ignore     ~/.config/git/ignore
+mkdir -p ~/.codex ~/.claude
+ln -sf ~/Developer/dotfiles/ai/me.md     ~/.codex/AGENTS.md
+ln -sf ~/Developer/dotfiles/ai/me.md     ~/.claude/me.md
+ln -sf ~/Developer/dotfiles/ai/CLAUDE.md ~/.claude/CLAUDE.md
 ```
 
 You'll still need `zsh`, `git`, `git-delta`, oh-my-zsh + powerlevel10k + the two zsh plugins on the box.
